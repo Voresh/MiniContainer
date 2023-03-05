@@ -191,10 +191,7 @@ public class EasyUnityCodeGen : ISourceGenerator {
         var sourceBuilder = new StringBuilder(
             @"using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-#if UNITY_2020_1_OR_NEWER && !DISABLE_EASY_UNITY_IL2CPP_OPTIONS
-using Unity.IL2CPP.CompilerServices;
-#endif");
+using System.Runtime.CompilerServices;");
         var addedNamespaces = new HashSet<string> {
             "System",
             "System.Collections.Generic",
@@ -243,12 +240,7 @@ using Unity.IL2CPP.CompilerServices;
         sourceBuilder.Append(
             @"
 
-namespace EasyUnity.InstanceConstructors {
-#if UNITY_2020_1_OR_NEWER && !DISABLE_EASY_UNITY_IL2CPP_OPTIONS
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-#endif
-");
+namespace EasyUnity.InstanceConstructors {");
         sourceBuilder.AppendLine($"    public class {className} : InstanceConstructor {{");
         sourceBuilder.AppendLine(@"        public static Dictionary<Type, Func<Container, object>> Constructors = new Dictionary<Type, Func<Container, object>> {");
         for (var index = 0; index < syntaxReceiver.Constructors.Count; index++) {

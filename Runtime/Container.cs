@@ -5,15 +5,7 @@ using EasyUnity.InstanceConstructors;
 using EasyUnity.Providers;
 using EasyUnity.Registration;
 
-#if UNITY_2020_1_OR_NEWER && !DISABLE_EASY_UNITY_IL2CPP_OPTIONS
-using Unity.IL2CPP.CompilerServices;
-#endif
-
 namespace EasyUnity {
-#if UNITY_2020_1_OR_NEWER && !DISABLE_EASY_UNITY_IL2CPP_OPTIONS
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-#endif
     public class Container {
         private readonly Container _Parent;
         private readonly Dictionary<Type, IProvider> _Container
