@@ -38,7 +38,7 @@ namespace EasyUnity.Registration {
         }
     }
     
-    public readonly struct RegistrationContext<TType> where TType : class {
+    public readonly struct RegistrationContext<TType> {
         private readonly Dictionary<Type, IProvider> _ContainerDictionary;
         private readonly IProvider _Provider;
 

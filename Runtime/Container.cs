@@ -25,7 +25,7 @@ namespace EasyUnity {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> RegisterInstance<TType>(TType instance) where TType : class {
+        public RegistrationContext<TType> RegisterInstance<TType>(TType instance) {
 #if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             if (_Container.ContainsKey(typeof(TType)))
                 throw new Exception($"{typeof(TType)} already registered in container");
@@ -36,7 +36,7 @@ namespace EasyUnity {
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> RegisterInstance<TType, TInterface>(TType instance) where TType : class, TInterface {
+        public RegistrationContext<TType> RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface {
 #if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             if (_Container.ContainsKey(typeof(TType)))
                 throw new Exception($"{typeof(TType)} already registered in container");
@@ -58,7 +58,7 @@ namespace EasyUnity {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> Register<TType, TInterface>(bool cached = true) where TInterface : class where TType : class, TInterface {
+        public RegistrationContext<TType> Register<TType, TInterface>(bool cached = true) where TType : TInterface {
 #if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             if (_Container.ContainsKey(typeof(TType)))
                 throw new Exception($"{typeof(TType)} already registered in container");
@@ -71,7 +71,7 @@ namespace EasyUnity {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> Register<TType>(bool cached = true) where TType : class {
+        public RegistrationContext<TType> Register<TType>(bool cached = true) {
 #if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             if (_Container.ContainsKey(typeof(TType)))
                 throw new Exception($"{typeof(TType)} already registered in container");
