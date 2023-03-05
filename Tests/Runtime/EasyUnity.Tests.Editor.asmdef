@@ -1,0 +1,19 @@
+{
+    "name": "EasyUnity.Tests.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:619d3e88498a34846b45ffec45d39725",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

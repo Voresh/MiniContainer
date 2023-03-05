@@ -1,0 +1,18 @@
+{
+  "name": "com.voresh.easyunity",
+  "version": "0.7.0",
+  "displayName": "EasyUnity",
+  "description": "Simple and fast DI framework.",
+  "unity": "2021.3",
+  "author": {
+    "name": "Voresh",
+    "email": "voresh95@gmail.com"
+  },
+  "samples": [
+    {
+      "displayName": "CodeGeneration",
+      "description": "Contains precompiled source generator dll",
+      "path": "Samples~/CodeGen"
+    }
+  ]
+}
