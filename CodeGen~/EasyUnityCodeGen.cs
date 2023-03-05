@@ -240,7 +240,8 @@ using System.Runtime.CompilerServices;");
         sourceBuilder.Append(
             @"
 
-namespace EasyUnity.InstanceConstructors {");
+namespace EasyUnity.InstanceConstructors {
+");
         sourceBuilder.AppendLine($"    public class {className} : InstanceConstructor {{");
         sourceBuilder.AppendLine(@"        public static Dictionary<Type, Func<Container, object>> Constructors = new Dictionary<Type, Func<Container, object>> {");
         for (var index = 0; index < syntaxReceiver.Constructors.Count; index++) {
