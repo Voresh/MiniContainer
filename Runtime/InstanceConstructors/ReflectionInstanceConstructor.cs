@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Linq;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace EasyUnity.InstanceConstructors {
     public class ReflectionInstanceConstructor : InstanceConstructor {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool TryGetInstance(Type type, Container container, out object instance) {
-            var constructor = type
-                .GetConstructors()
-                .OrderByDescending(_ => _.GetParameters().Length)
-                .First();
-            var parameters = constructor
-                .GetParameters()
-                .Select(_ => container.Resolve(_.ParameterType))
-                .ToArray(); //todo: remove allocation
-            instance = Activator.CreateInstance(type, parameters);
+            var constructors = type.GetConstructors();
+            var parameters = constructors[0].GetParameters();
+            for (var index = 1; index < constructors.Length; index++) {
+                var nextParameters = constructors[index].GetParameters();
+                if (parameters.Length < nextParameters.Length)
+                    parameters = nextParameters;
+            }
+            var sharedPool = ArrayPool<object>.Shared;
+            var resolvedParameters = sharedPool.Rent(parameters.Length);
+            for (var index = 0; index < parameters.Length; index++)
+                resolvedParameters[index] = container.Resolve(parameters[index].ParameterType);
+            instance = Activator.CreateInstance(type, resolvedParameters);
+            sharedPool.Return(resolvedParameters);
             return true;
         }
     }
