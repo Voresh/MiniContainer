@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using EasyUnity.Exceptions;
 using EasyUnity.InstanceConstructors;
 using EasyUnity.Providers;
 using EasyUnity.Registration;
 
 namespace EasyUnity {
-    public class Container {
+    public class Container : IDisposable {
         private readonly Container _Parent;
         private readonly Dictionary<Type, IProvider> _Container
             = new Dictionary<Type, IProvider>();
+        private readonly HashSet<object> _ResolvedObjects 
+            = new HashSet<object>();
         private static readonly HashSet<InstanceConstructor> _InstanceConstructors
             = new HashSet<InstanceConstructor> { new ReflectionInstanceConstructor() };
 
@@ -25,74 +28,52 @@ namespace EasyUnity {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> RegisterInstance<TType>(TType instance) {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(typeof(TType)))
-                throw new Exception($"{typeof(TType)} already registered in container");
-#endif
-            var provider = new InstanceProvider(instance);
-            _Container.Add(typeof(TType), provider);
-            return new RegistrationContext<TType>(_Container, provider);
+        public RegistrationContext RegisterInstance<TType>(TType instance) {
+            return RegisterInstance(instance, typeof(TType));
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(typeof(TType)))
-                throw new Exception($"{typeof(TType)} already registered in container");
-#endif
-            var provider = new InstanceProvider(instance);
-            _Container.Add(typeof(TInterface), provider);
-            return new RegistrationContext<TType>(_Container, provider);
+        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface {
+            return RegisterInstance(instance, typeof(TInterface));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext RegisterInstance(object instance, Type interfaceType) {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(type))
-                throw new Exception($"{type} already registered in container");
+#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+            if (!interfaceType.IsInstanceOfType(instance))
+                throw new ArgumentException($"{interfaceType} not assignable from {instance.GetType()}");
 #endif
             var provider = new InstanceProvider(instance);
             _Container.Add(interfaceType, provider);
+            _ResolvedObjects.Add(instance);
             return new RegistrationContext(_Container, provider, instance.GetType());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> Register<TType, TInterface>(bool cached = true) where TType : TInterface {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(typeof(TType)))
-                throw new Exception($"{typeof(TType)} already registered in container");
-#endif
-            IProvider provider = cached
-                ? new CachedProvider(this, typeof(TType)) 
-                : new NonCachedProvider(this, typeof(TType));
-            _Container.Add(typeof(TInterface), provider);
-            return new RegistrationContext<TType>(_Container, provider);
+        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface {
+            return Register(typeof(TType), typeof(TInterface), cached);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext<TType> Register<TType>(bool cached = true) {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(typeof(TType)))
-                throw new Exception($"{typeof(TType)} already registered in container");
-#endif
-            IProvider provider = cached 
-                ? new CachedProvider(this, typeof(TType))
-                : new NonCachedProvider(this, typeof(TType));
-            _Container.Add(typeof(TType), provider);
-            return new RegistrationContext<TType>(_Container, provider);
+        public RegistrationContext Register<TType>(bool cached = true) {
+            return Register(typeof(TType), cached);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext Register(Type type, bool cached = true) {
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (_Container.ContainsKey(type))
-                throw new Exception($"{type} already registered in container");
+            return Register(type, type, cached);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public RegistrationContext Register(Type type, Type interfaceType, bool cached = true) {
+#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+            if (!interfaceType.IsAssignableFrom(type))
+                throw new ArgumentException($"{interfaceType} not assignable from {type}");
 #endif
             IProvider provider = cached
                 ? new CachedProvider(this, type) 
                 : new NonCachedProvider(this, type);
-            _Container.Add(type, provider);
+            _Container.Add(interfaceType, provider);
             return new RegistrationContext(_Container, provider, type);
         }
 
@@ -101,8 +82,8 @@ namespace EasyUnity {
             foreach (var instanceConstructor in _InstanceConstructors)
                 if (instanceConstructor.TryGetInstance(type, this, out var instance))
                     return instance;
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            throw new Exception($"no instance constructor found for {type}");
+#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+            throw new InstanceConstructorNotFoundException($"no instance constructor found for {type}");
 #endif
             return null;
         }
@@ -114,13 +95,23 @@ namespace EasyUnity {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Type type) {
-            if (_Container.TryGetValue(type, out var provider))
-                return provider.GetInstance();
-#if ENABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+            if (_Container.TryGetValue(type, out var provider)) {
+                var instance = provider.GetInstance();
+                _ResolvedObjects.Add(instance);
+                return instance;
+            }
+#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             if (_Parent == null)
-                throw new Exception($"{type} not registered in container");
+                throw new TypeNotRegisteredException($"{type} not registered in container");
 #endif
             return _Parent.Resolve(type);
+        }
+
+        public void Dispose() {
+            foreach (var resolvedObject in _ResolvedObjects)
+                if (resolvedObject is IDisposable disposable)
+                    disposable.Dispose();
+            _ResolvedObjects.Clear();
         }
     }
 }
