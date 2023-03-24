@@ -75,7 +75,7 @@ namespace EasyUnity {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext Register(Type type, Type interfaceType, bool cached = true) {
 #if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
-            if (!interfaceType.IsAssignableFrom(type))
+            if (!interfaceType.IsAssignableFrom(type) && (!type.IsGenericTypeDefinition || !interfaceType.IsGenericTypeDefinition))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
 #endif
             if (!interfaceType.IsGenericTypeDefinition) {
