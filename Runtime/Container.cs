@@ -9,8 +9,12 @@ using EasyUnity.Registration;
 namespace EasyUnity {
     public class Container : IDisposable {
         private readonly Container _Parent;
-        private readonly Dictionary<Type, IProvider> _Container
+        private readonly Dictionary<Type, IProvider> _Providers
             = new Dictionary<Type, IProvider>();
+        private readonly RegistrationContextProviders<IProvider> _RegistrationContextProviders;
+        private readonly Dictionary<Type, IOpenGenericProvider> _OpenGenericProviders
+            = new Dictionary<Type, IOpenGenericProvider>();
+        private readonly RegistrationContextProviders<IOpenGenericProvider> _RegistrationContextOpenGenericProviders;
         private readonly HashSet<object> _ResolvedObjects 
             = new HashSet<object>();
         private static readonly HashSet<InstanceConstructor> _InstanceConstructors
@@ -18,6 +22,10 @@ namespace EasyUnity {
 
         public Container(Container parent = null) {
             _Parent = parent;
+            _RegistrationContextProviders 
+                = new RegistrationContextProviders<IProvider>(_Providers);
+            _RegistrationContextOpenGenericProviders 
+                = new RegistrationContextProviders<IOpenGenericProvider>(_OpenGenericProviders);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,9 +52,9 @@ namespace EasyUnity {
                 throw new ArgumentException($"{interfaceType} not assignable from {instance.GetType()}");
 #endif
             var provider = new InstanceProvider(instance);
-            _Container.Add(interfaceType, provider);
+            _Providers.Add(interfaceType, provider);
             _ResolvedObjects.Add(instance);
-            return new RegistrationContext(_Container, provider, instance.GetType());
+            return new RegistrationContext(_RegistrationContextProviders, provider, instance.GetType());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,11 +78,20 @@ namespace EasyUnity {
             if (!interfaceType.IsAssignableFrom(type))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
 #endif
-            IProvider provider = cached
-                ? new CachedProvider(this, type) 
-                : new NonCachedProvider(this, type);
-            _Container.Add(interfaceType, provider);
-            return new RegistrationContext(_Container, provider, type);
+            if (!interfaceType.IsGenericTypeDefinition) {
+                IProvider provider = cached
+                    ? new CachedProvider(this, type)
+                    : new NonCachedProvider(this, type);
+                _Providers.Add(interfaceType, provider);
+                return new RegistrationContext(_RegistrationContextProviders, provider, type);
+            }
+            else {
+                IOpenGenericProvider openGenericProvider = cached
+                    ? new OpenGenericCachedProvider(this, type)
+                    : new OpenGenericNonCachedProvider(this, type);
+                _OpenGenericProviders.Add(interfaceType, openGenericProvider);
+                return new RegistrationContext(_RegistrationContextOpenGenericProviders, openGenericProvider, type);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -95,8 +112,14 @@ namespace EasyUnity {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Type type) {
-            if (_Container.TryGetValue(type, out var provider)) {
+            if (_Providers.TryGetValue(type, out var provider)) {
                 var instance = provider.GetInstance();
+                _ResolvedObjects.Add(instance);
+                return instance;
+            }
+            if (type.IsGenericType 
+                && _OpenGenericProviders.TryGetValue(type.GetGenericTypeDefinition(), out var openGenericProvider)) {
+                var instance = openGenericProvider.GetInstance(type.GetGenericArguments());
                 _ResolvedObjects.Add(instance);
                 return instance;
             }

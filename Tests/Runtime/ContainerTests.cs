@@ -1,21 +1,15 @@
 ﻿using EasyUnity;
-using EasyUnity.InstanceConstructors;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Tests.Editor {
     public class ContainerTests {
         public class ClassA : IClassA { }
+        public class ClassB { }
         public interface IClassA { }
-        
-        // [Test]
-        // public void GeneratedInstanceConstructorTest() {
-        //     var container = new Container();
-        //     Container.SetInstanceConstructors(new EasyUnityTestsEditor_GeneratedInstanceConstructor());
-        //     container.Register<ClassA>()
-        //         .As<IClassA>();
-        //     var dependencyA = container.Resolve<IClassA>();
-        //     Assert.IsNotNull(dependencyA);
-        // }
+        public class GenericClassA<T> { }
+        public class GenericClassAChild : GenericClassA<ClassA> { }
+        public class TwoGenericClassA<T, T1> { }
         
         [Test]
         public void RegisterInstanceTest() {
@@ -34,6 +28,60 @@ namespace Tests.Editor {
             Assert.IsNotNull(dependencyA);
         }
         
-        //todo:
+        [Test]
+        public void RegisterOpenGenericTest() {
+            var container = new Container();
+            container.Register(typeof(GenericClassA<>));
+            var dependencyA = container.Resolve<GenericClassA<ClassA>>();
+            Assert.IsNotNull(dependencyA);
+        }
+        
+        [Test]
+        public void RegisterOpenGenericsTest() {
+            var container = new Container();
+            container.Register(typeof(GenericClassA<>));
+            var dependencyA = container.Resolve<GenericClassA<ClassA>>();
+            var dependencyB = container.Resolve<GenericClassA<ClassB>>();
+            Assert.IsNotNull(dependencyA);
+            Assert.IsNotNull(dependencyB);
+        }
+        
+        [Test]
+        public void RegisterOpenGenericOverrideTest() {
+            var container = new Container();
+            container.Register(typeof(GenericClassA<>));
+            container.Register(typeof(GenericClassAChild), typeof(GenericClassA<ClassA>));
+            var dependencyA = container.Resolve<GenericClassA<ClassA>>();
+            Assert.IsNotNull(dependencyA);
+            Assert.That(dependencyA is GenericClassAChild);
+        }
+        
+        [Test]
+        public void RegisterTwoOpenGenericsTest() {
+            var container = new Container();
+            container.Register(typeof(TwoGenericClassA<,>));
+            var dependencyAB = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
+            Assert.IsNotNull(dependencyAB);
+            var dependencyBA = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
+            Assert.IsNotNull(dependencyBA);
+            var dependencyAB2 = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
+            Assert.That(dependencyAB == dependencyAB2);
+            var dependencyBA2 = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
+            Assert.That(dependencyBA == dependencyBA2);
+        }
+        
+        [Test]
+        public void RegisterTwoOpenGenericsNonCachedTest() {
+            var container = new Container();
+            container.Register(typeof(TwoGenericClassA<,>), false);
+            var dependencyAB = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
+            Assert.IsNotNull(dependencyAB);
+            var dependencyBA = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
+            Assert.IsNotNull(dependencyBA);
+            var dependencyAB2 = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
+            Assert.That(dependencyAB != dependencyAB2);
+            var dependencyBA2 = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
+            Assert.That(dependencyBA != dependencyBA2);
+        }
     }
 }
