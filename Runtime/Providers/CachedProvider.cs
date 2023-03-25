@@ -8,6 +8,8 @@ namespace EasyUnity.Providers {
         private bool _Created;
         private object _Instance;
 
+        public bool Tracked => true;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance() {
             if (_Created)

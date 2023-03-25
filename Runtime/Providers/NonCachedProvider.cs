@@ -6,6 +6,8 @@ namespace EasyUnity.Providers {
         private readonly Container _Container;
         private readonly Type _Type;
 
+        public bool Tracked => false;
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance() {
             return _Container.CreateInstance(_Type);

@@ -114,13 +114,15 @@ namespace EasyUnity {
         public object Resolve(Type type) {
             if (_Providers.TryGetValue(type, out var provider)) {
                 var instance = provider.GetInstance();
-                _ResolvedObjects.Add(instance);
+                if (provider.Tracked)
+                    _ResolvedObjects.Add(instance);
                 return instance;
             }
             if (type.IsGenericType 
                 && _OpenGenericProviders.TryGetValue(type.GetGenericTypeDefinition(), out var openGenericProvider)) {
                 var instance = openGenericProvider.GetInstance(type.GetGenericArguments());
-                _ResolvedObjects.Add(instance);
+                if (openGenericProvider.Tracked)
+                    _ResolvedObjects.Add(instance);
                 return instance;
             }
 #if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS

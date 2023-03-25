@@ -30,6 +30,8 @@ namespace EasyUnity.Providers {
         private readonly Dictionary<Type[], object> _GenericInstances 
             = new Dictionary<Type[], object>(new TypesArrayEqualityComparer());
 
+        public bool Tracked => true;
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type[] genericArguments) {
             if (_GenericInstances.TryGetValue(genericArguments, out var instance))

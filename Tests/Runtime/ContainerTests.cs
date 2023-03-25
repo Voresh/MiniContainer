@@ -1,4 +1,5 @@
-﻿using EasyUnity;
+﻿using System;
+using EasyUnity;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -10,6 +11,13 @@ namespace Tests.Editor {
         public class GenericClassA<T> { }
         public class GenericClassAChild : GenericClassA<ClassA> { }
         public class TwoGenericClassA<T, T1> { }
+        public class DisposableClass : IDisposable {
+            public bool Disposed { get; private set; }
+
+            public void Dispose() {
+                Disposed = true;
+            }
+        }
         
         [Test]
         public void RegisterInstanceTest() {
@@ -82,6 +90,24 @@ namespace Tests.Editor {
             Assert.That(dependencyAB != dependencyAB2);
             var dependencyBA2 = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
             Assert.That(dependencyBA != dependencyBA2);
+        }
+        
+        [Test]
+        public void CachedDisposedTest() {
+            var container = new Container();
+            container.Register<DisposableClass>(true);
+            var disposable = container.Resolve<DisposableClass>();
+            container.Dispose();
+            Assert.IsTrue(disposable.Disposed);
+        }
+        
+        [Test]
+        public void NonCachedNotDisposedTest() {
+            var container = new Container();
+            container.Register<DisposableClass>(false);
+            var disposable = container.Resolve<DisposableClass>();
+            container.Dispose();
+            Assert.IsFalse(disposable.Disposed);
         }
     }
 }
