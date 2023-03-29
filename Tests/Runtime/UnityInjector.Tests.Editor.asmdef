@@ -1,5 +1,5 @@
 {
-    "name": "EasyUnity.Tests.Editor",
+    "name": "UnityInjector.Tests.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:619d3e88498a34846b45ffec45d39725",

@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Providers {
+namespace UnityInjector.Providers {
     public class InstanceProvider : IProvider {
         private readonly object _Instance;
 

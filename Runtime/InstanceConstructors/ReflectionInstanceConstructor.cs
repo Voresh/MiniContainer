@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.InstanceConstructors {
+namespace UnityInjector.InstanceConstructors {
     public class ReflectionInstanceConstructor : InstanceConstructor {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool TryGetInstance(Type type, Container container, out object instance) {

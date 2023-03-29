@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Registration {
+namespace UnityInjector.Registration {
     public readonly struct RegistrationContext {
         private readonly IRegistrationContextProviders _Providers;
         private readonly object _Provider;

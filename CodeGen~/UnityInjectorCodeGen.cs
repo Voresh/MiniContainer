@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 [Generator]
-public class EasyUnityCodeGen : ISourceGenerator {
+public class UnityInjectorCodeGen : ISourceGenerator {
     private class SyntaxReceiver : ISyntaxReceiver {
         public List<ConstructorDeclarationSyntax> Constructors = new List<ConstructorDeclarationSyntax>();
         public List<TypeDeclarationSyntax> DefaultConstructorTypes = new List<TypeDeclarationSyntax>();
@@ -158,7 +158,7 @@ public class EasyUnityCodeGen : ISourceGenerator {
         if (!(context.SyntaxReceiver is SyntaxReceiver syntaxReceiver))
             return;
         var instanceConstructorType 
-            = context.Compilation.GetTypeByMetadataName("EasyUnity.InstanceConstructors.InstanceConstructor");
+            = context.Compilation.GetTypeByMetadataName("UnityInjector.InstanceConstructors.InstanceConstructor");
         if (instanceConstructorType == null)
             return; // di framework not referenced
         var sourceModuleName = context.Compilation.SourceModule.Name;
@@ -240,7 +240,7 @@ using System.Runtime.CompilerServices;");
         sourceBuilder.Append(
             @"
 
-namespace EasyUnity.InstanceConstructors {
+namespace UnityInjector.InstanceConstructors {
 ");
         sourceBuilder.AppendLine($"    public class {className} : InstanceConstructor {{");
         sourceBuilder.AppendLine(@"        public static Dictionary<Type, Func<Container, object>> Constructors = new Dictionary<Type, Func<Container, object>> {");

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EasyUnity.Factories {
+namespace UnityInjector.Factories {
     public class AbstractFactory {
         private readonly Container _Container;
 

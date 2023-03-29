@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Providers {
+namespace UnityInjector.Providers {
     public interface IProvider {
         bool Tracked { get; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

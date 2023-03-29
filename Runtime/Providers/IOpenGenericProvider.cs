@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Providers {
+namespace UnityInjector.Providers {
     public interface IOpenGenericProvider {
         bool Tracked { get; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

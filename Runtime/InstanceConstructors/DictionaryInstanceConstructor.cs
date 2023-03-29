@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.InstanceConstructors {
+namespace UnityInjector.InstanceConstructors {
     public class DictionaryInstanceConstructor : InstanceConstructor {
         public Dictionary<Type, Func<Container, object>> Constructors { get; }
         

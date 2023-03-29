@@ -1,7 +1,7 @@
 {
-  "name": "com.voresh.easyunity",
+  "name": "com.voresh.unityinjector",
   "version": "0.7.0",
-  "displayName": "EasyUnity",
+  "displayName": "UnityInjector",
   "description": "Simple and fast DI framework.",
   "unity": "2021.3",
   "author": {

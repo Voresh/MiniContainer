@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using EasyUnity.Exceptions;
-using EasyUnity.InstanceConstructors;
-using EasyUnity.Providers;
-using EasyUnity.Registration;
+using UnityInjector.Exceptions;
+using UnityInjector.InstanceConstructors;
+using UnityInjector.Providers;
+using UnityInjector.Registration;
 
-namespace EasyUnity {
+namespace UnityInjector {
     public class Container : IDisposable {
         private readonly Container _Parent;
         private readonly Dictionary<Type, IProvider> _Providers

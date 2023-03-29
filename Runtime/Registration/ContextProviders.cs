@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Registration {
+namespace UnityInjector.Registration {
     internal interface IRegistrationContextProviders {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Add(Type type, object provider);

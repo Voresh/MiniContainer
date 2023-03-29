@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Providers {
+namespace UnityInjector.Providers {
     public class CachedProvider : IProvider {
         private readonly Container _Container;
         private readonly Type _Type;

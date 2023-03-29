@@ -1,9 +1,8 @@
 ﻿using System;
-using EasyUnity;
+using UnityInjector;
 using NUnit.Framework;
-using UnityEngine;
 
-namespace Tests.Editor {
+namespace UnityInjector.Tests.Runtime {
     public class ContainerTests {
         public class ClassA : IClassA { }
         public class ClassB { }

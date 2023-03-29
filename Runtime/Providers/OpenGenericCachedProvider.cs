@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace EasyUnity.Providers {
+namespace UnityInjector.Providers {
     public class OpenGenericCachedProvider : IOpenGenericProvider {
         private class TypesArrayEqualityComparer : IEqualityComparer<Type[]> {
             public bool Equals(Type[] x, Type[] y) {
