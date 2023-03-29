@@ -102,7 +102,9 @@ namespace UnityInjector {
 #if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
             throw new InstanceConstructorNotFoundException($"no instance constructor found for {type}");
 #endif
+#pragma warning disable CS0162
             return null;
+#pragma warning restore CS0162
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
