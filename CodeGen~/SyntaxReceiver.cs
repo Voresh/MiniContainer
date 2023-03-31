@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,15 +12,12 @@ namespace UnityInjectorCodeGen {
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode) {
             if (syntaxNode is TypeDeclarationSyntax typeDeclarationSyntax) {
-                if (!typeDeclarationSyntax.Keyword.IsKind(SyntaxKind.ClassKeyword))
+                if (!typeDeclarationSyntax.Keyword.IsKind(SyntaxKind.ClassKeyword) 
+                    && !typeDeclarationSyntax.Keyword.IsKind(SyntaxKind.StructKeyword))
                     return;
                 if (typeDeclarationSyntax.Modifiers.Any(SyntaxKind.AbstractKeyword))
                     return;
                 if (typeDeclarationSyntax.Modifiers.Any(SyntaxKind.StaticKeyword))
-                    return;
-                if (typeDeclarationSyntax.Modifiers.Any(SyntaxKind.PrivateKeyword))
-                    return;
-                if (typeDeclarationSyntax.Modifiers.Any(SyntaxKind.ProtectedKeyword))
                     return;
                 if (!typeDeclarationSyntax.Modifiers.Any(SyntaxKind.PublicKeyword))
                     return;
