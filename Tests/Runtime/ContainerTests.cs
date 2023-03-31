@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityInjector;
 using NUnit.Framework;
 
 namespace UnityInjector.Tests.Runtime {

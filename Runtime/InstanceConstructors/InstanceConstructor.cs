@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace UnityInjector.InstanceConstructors {
     public abstract class InstanceConstructor {
