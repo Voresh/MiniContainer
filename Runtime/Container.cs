@@ -47,7 +47,7 @@ namespace UnityInjector {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext RegisterInstance(object instance, Type interfaceType) {
-#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+#if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (!interfaceType.IsInstanceOfType(instance))
                 throw new ArgumentException($"{interfaceType} not assignable from {instance.GetType()}");
 #endif
@@ -73,7 +73,7 @@ namespace UnityInjector {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext Register(Type type, Type interfaceType, bool cached = true) {
-#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+#if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (!interfaceType.IsAssignableFrom(type) && (!type.IsGenericTypeDefinition || !interfaceType.IsGenericTypeDefinition))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
 #endif
@@ -98,7 +98,7 @@ namespace UnityInjector {
             foreach (var instanceConstructor in _InstanceConstructors)
                 if (instanceConstructor.TryGetInstance(type, this, out var instance))
                     return instance;
-#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+#if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             throw new InstanceConstructorNotFoundException($"no instance constructor found for {type}");
 #endif
 #pragma warning disable CS0162
@@ -126,7 +126,7 @@ namespace UnityInjector {
                     _Disposables.Add(disposable);
                 return instance;
             }
-#if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
+#if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (_Parent == null)
                 throw new TypeNotRegisteredException($"{type} not registered in container");
 #endif
