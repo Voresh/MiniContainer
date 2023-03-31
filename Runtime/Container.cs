@@ -15,8 +15,8 @@ namespace UnityInjector {
         private readonly Dictionary<Type, IOpenGenericProvider> _OpenGenericProviders
             = new Dictionary<Type, IOpenGenericProvider>();
         private readonly RegistrationContextProviders<IOpenGenericProvider> _RegistrationContextOpenGenericProviders;
-        private readonly HashSet<object> _ResolvedObjects 
-            = new HashSet<object>();
+        private readonly HashSet<IDisposable> _Disposables 
+            = new HashSet<IDisposable>();
         private static readonly HashSet<InstanceConstructor> _InstanceConstructors
             = new HashSet<InstanceConstructor> { new ReflectionInstanceConstructor() };
 
@@ -53,7 +53,6 @@ namespace UnityInjector {
 #endif
             var provider = new InstanceProvider(instance);
             _Providers.Add(interfaceType, provider);
-            _ResolvedObjects.Add(instance);
             return new RegistrationContext(_RegistrationContextProviders, provider, instance.GetType());
         }
 
@@ -116,15 +115,15 @@ namespace UnityInjector {
         public object Resolve(Type type) {
             if (_Providers.TryGetValue(type, out var provider)) {
                 var instance = provider.GetInstance();
-                if (provider.Tracked)
-                    _ResolvedObjects.Add(instance);
+                if (provider.Tracked && instance is IDisposable disposable)
+                    _Disposables.Add(disposable);
                 return instance;
             }
             if (type.IsGenericType 
                 && _OpenGenericProviders.TryGetValue(type.GetGenericTypeDefinition(), out var openGenericProvider)) {
                 var instance = openGenericProvider.GetInstance(type.GetGenericArguments());
-                if (openGenericProvider.Tracked)
-                    _ResolvedObjects.Add(instance);
+                if (openGenericProvider.Tracked && instance is IDisposable disposable)
+                    _Disposables.Add(disposable);
                 return instance;
             }
 #if !DISABLE_EASY_UNITY_CONTAINER_EXCEPTIONS
@@ -135,10 +134,9 @@ namespace UnityInjector {
         }
 
         public void Dispose() {
-            foreach (var resolvedObject in _ResolvedObjects)
-                if (resolvedObject is IDisposable disposable)
-                    disposable.Dispose();
-            _ResolvedObjects.Clear();
+            foreach (var disposable in _Disposables)
+                disposable.Dispose();
+            _Disposables.Clear();
         }
     }
 }
