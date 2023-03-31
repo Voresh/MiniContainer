@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace UnityInjector.Registration {
     public readonly struct RegistrationContext {
-        private readonly IRegistrationContextProviders _Providers;
-        private readonly object _Provider;
-        private readonly Type _Type;
+        private readonly Dictionary<Type,Registration> _Registrations;
+        private readonly Registration _ImplementationRegistration;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext As<TInterface>() {
@@ -14,16 +14,19 @@ namespace UnityInjector.Registration {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext As(Type interfaceType) {
-            if (!interfaceType.IsAssignableFrom(_Type))
-                throw new ArgumentException($"{interfaceType} not assignable from {_Type}");
-            _Providers.Add(interfaceType, _Provider);
+#if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
+            if (!interfaceType.IsAssignableFrom(_ImplementationRegistration.ImplementationType))
+                throw new ArgumentException($"{interfaceType} not assignable from {_ImplementationRegistration.ImplementationType}");
+#endif
+            _Registrations.Add(interfaceType, _ImplementationRegistration);
             return this;
         }
     
-        internal RegistrationContext(IRegistrationContextProviders providers, object provider, Type type) {
-            _Providers = providers;
-            _Provider = provider;
-            _Type = type;
+        internal RegistrationContext(
+            Dictionary<Type, Registration> registrations,
+            Registration implementationRegistration) {
+            _Registrations = registrations;
+            _ImplementationRegistration = implementationRegistration;
         }
     }
 }

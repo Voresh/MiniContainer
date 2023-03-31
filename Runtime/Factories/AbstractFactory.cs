@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace UnityInjector.Factories {
     public class AbstractFactory {
@@ -8,10 +9,12 @@ namespace UnityInjector.Factories {
             _Container = container;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object ConstructType(Type type) {
             return _Container.CreateInstance(type);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T ConstructType<T>() {
             return (T) _Container.CreateInstance(typeof(T));
         }

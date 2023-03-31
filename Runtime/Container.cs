@@ -3,29 +3,22 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityInjector.Exceptions;
 using UnityInjector.InstanceConstructors;
-using UnityInjector.Providers;
 using UnityInjector.Registration;
 
 namespace UnityInjector {
     public class Container : IDisposable {
         private readonly Container _Parent;
-        private readonly Dictionary<Type, IProvider> _Providers
-            = new Dictionary<Type, IProvider>();
-        private readonly RegistrationContextProviders<IProvider> _RegistrationContextProviders;
-        private readonly Dictionary<Type, IOpenGenericProvider> _OpenGenericProviders
-            = new Dictionary<Type, IOpenGenericProvider>();
-        private readonly RegistrationContextProviders<IOpenGenericProvider> _RegistrationContextOpenGenericProviders;
+        private readonly Dictionary<Type, Registration.Registration> _Registrations
+            = new Dictionary<Type, Registration.Registration>();
+        private readonly Dictionary<Type, object> _Instances
+            = new Dictionary<Type, object>();
         private readonly HashSet<IDisposable> _Disposables 
             = new HashSet<IDisposable>();
         private static readonly HashSet<InstanceConstructor> _InstanceConstructors
-            = new HashSet<InstanceConstructor> { new ReflectionInstanceConstructor() };
+            = new HashSet<InstanceConstructor>(1) { new ReflectionInstanceConstructor() };
 
         public Container(Container parent = null) {
             _Parent = parent;
-            _RegistrationContextProviders 
-                = new RegistrationContextProviders<IProvider>(_Providers);
-            _RegistrationContextOpenGenericProviders 
-                = new RegistrationContextProviders<IOpenGenericProvider>(_OpenGenericProviders);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -51,9 +44,10 @@ namespace UnityInjector {
             if (!interfaceType.IsInstanceOfType(instance))
                 throw new ArgumentException($"{interfaceType} not assignable from {instance.GetType()}");
 #endif
-            var provider = new InstanceProvider(instance);
-            _Providers.Add(interfaceType, provider);
-            return new RegistrationContext(_RegistrationContextProviders, provider, instance.GetType());
+            var implementationRegistration = new Registration.Registration(instance.GetType(), true);
+            _Registrations.Add(interfaceType, implementationRegistration);
+            _Instances.Add(interfaceType, instance);
+            return new RegistrationContext(_Registrations, implementationRegistration);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -77,20 +71,9 @@ namespace UnityInjector {
             if (!interfaceType.IsAssignableFrom(type) && (!type.IsGenericTypeDefinition || !interfaceType.IsGenericTypeDefinition))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
 #endif
-            if (!interfaceType.IsGenericTypeDefinition) {
-                IProvider provider = cached
-                    ? new CachedProvider(this, type)
-                    : new NonCachedProvider(this, type);
-                _Providers.Add(interfaceType, provider);
-                return new RegistrationContext(_RegistrationContextProviders, provider, type);
-            }
-            else {
-                IOpenGenericProvider openGenericProvider = cached
-                    ? new OpenGenericCachedProvider(this, type)
-                    : new OpenGenericNonCachedProvider(this, type);
-                _OpenGenericProviders.Add(interfaceType, openGenericProvider);
-                return new RegistrationContext(_RegistrationContextOpenGenericProviders, openGenericProvider, type);
-            }
+            var implementationRegistration = new Registration.Registration(type, cached);
+            _Registrations.Add(interfaceType, implementationRegistration);
+            return new RegistrationContext(_Registrations, implementationRegistration);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,17 +96,27 @@ namespace UnityInjector {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Type type) {
-            if (_Providers.TryGetValue(type, out var provider)) {
-                var instance = provider.GetInstance();
-                if (provider.Tracked && instance is IDisposable disposable)
-                    _Disposables.Add(disposable);
+            if (_Instances.TryGetValue(type, out var instance))
+                return instance;
+            if (_Registrations.TryGetValue(type, out var registration)) {
+                instance = CreateInstance(registration.ImplementationType);
+                if (registration.Cached) {
+                    _Instances.Add(type, instance);
+                    if (instance is IDisposable disposable)
+                        _Disposables.Add(disposable);
+                }
                 return instance;
             }
             if (type.IsGenericType 
-                && _OpenGenericProviders.TryGetValue(type.GetGenericTypeDefinition(), out var openGenericProvider)) {
-                var instance = openGenericProvider.GetInstance(type.GetGenericArguments());
-                if (openGenericProvider.Tracked && instance is IDisposable disposable)
-                    _Disposables.Add(disposable);
+                && _Registrations.TryGetValue(type.GetGenericTypeDefinition(), out registration)) {
+                var genericArguments = type.GetGenericArguments();
+                var genericImplementationType = registration.ImplementationType.MakeGenericType(genericArguments);
+                instance = CreateInstance(genericImplementationType);
+                if (registration.Cached) {
+                    _Instances.Add(type, instance);
+                    if (instance is IDisposable disposable)
+                        _Disposables.Add(disposable);
+                }
                 return instance;
             }
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS

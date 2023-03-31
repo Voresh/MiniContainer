@@ -25,6 +25,33 @@ namespace UnityInjector.Tests.Runtime {
             var dependencyA = container.Resolve<ClassA>();
             Assert.IsNotNull(dependencyA);
         }
+
+        [Test]
+        public void RegisterTypeTest() {
+            var container = new Container();
+            container.Register<ClassA>();
+            var dependencyA = container.Resolve<ClassA>();
+            Assert.IsNotNull(dependencyA);
+        }
+        
+        [Test]
+        public void RegisterTypeInterfaceTest() {
+            var container = new Container();
+            container.Register<ClassA, IClassA>();
+            var dependencyInterfaceA = container.Resolve<IClassA>();
+            Assert.IsNotNull(dependencyInterfaceA);
+        }
+        
+        [Test]
+        public void RegisterTypeSelfAndInterfaceTest() {
+            var container = new Container();
+            container.Register<ClassA>()
+                .As<IClassA>();
+            var dependencyA = container.Resolve<ClassA>();
+            Assert.IsNotNull(dependencyA);
+            var dependencyInterfaceA = container.Resolve<IClassA>();
+            Assert.IsNotNull(dependencyInterfaceA);
+        }
         
         [Test]
         public void RegisterInstanceInterfaceTest() {
@@ -104,6 +131,15 @@ namespace UnityInjector.Tests.Runtime {
         public void NonCachedNotDisposedTest() {
             var container = new Container();
             container.Register<DisposableClass>(false);
+            var disposable = container.Resolve<DisposableClass>();
+            container.Dispose();
+            Assert.IsFalse(disposable.Disposed);
+        }
+        
+        [Test]
+        public void InstanceNotDisposedTest() {
+            var container = new Container();
+            container.RegisterInstance(new DisposableClass());
             var disposable = container.Resolve<DisposableClass>();
             container.Dispose();
             Assert.IsFalse(disposable.Disposed);
