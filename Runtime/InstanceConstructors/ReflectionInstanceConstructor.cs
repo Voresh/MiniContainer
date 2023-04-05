@@ -13,12 +13,17 @@ namespace UnityInjector.InstanceConstructors {
                 if (parameters.Length < nextParameters.Length)
                     parameters = nextParameters;
             }
-            var sharedPool = ArrayPool<object>.Shared;
-            var resolvedParameters = sharedPool.Rent(parameters.Length);
-            for (var index = 0; index < parameters.Length; index++)
-                resolvedParameters[index] = container.Resolve(parameters[index].ParameterType);
-            instance = Activator.CreateInstance(type, resolvedParameters);
-            sharedPool.Return(resolvedParameters);
+            if (parameters.Length > 0) {
+                var sharedPool = ArrayPool<object>.Shared;
+                var resolvedParameters = sharedPool.Rent(parameters.Length);
+                for (var index = 0; index < parameters.Length; index++)
+                    resolvedParameters[index] = container.Resolve(parameters[index].ParameterType);
+                instance = Activator.CreateInstance(type, resolvedParameters);
+                sharedPool.Return(resolvedParameters);
+            }
+            else {
+                instance = Activator.CreateInstance(type);
+            }
             return true;
         }
     }
