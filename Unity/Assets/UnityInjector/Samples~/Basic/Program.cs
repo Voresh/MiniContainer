@@ -1,10 +1,9 @@
-﻿using Samples.Basic.Logger;
-using Samples.Basic.Services;
-using UnityEngine;
-using UnityInjector;
+﻿using UnityEngine;
 using UnityInjector.InstanceConstructors;
+using UnityInjector.Samples.Basic.Logger;
+using UnityInjector.Samples.Basic.Services;
 
-namespace Samples.Basic {
+namespace UnityInjector.Samples.Basic {
     public class Program {
         [RuntimeInitializeOnLoadMethod]
         private static void Main() {
@@ -19,7 +18,7 @@ namespace Samples.Basic {
                 new ReflectionInstanceConstructor());
             container.Register<Service>();
             container.Register<AnotherService, IAnotherService>();
-            container.Register(typeof(Logger<>), typeof(ILogger<>));
+            container.Register(typeof(Logger<>), typeof(ILogger<>), false);
             container.Register(typeof(AnotherLogger<AnotherService>), typeof(ILogger<AnotherService>));
             return container;
         }
