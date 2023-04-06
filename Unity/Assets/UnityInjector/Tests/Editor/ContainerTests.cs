@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using UnityInjector.InstanceConstructors;
 
-namespace UnityInjector.Tests.Runtime {
+namespace UnityInjector.Tests.Editor {
     public class ContainerTests {
         public class ClassA : IClassA { }
         public class ClassB { }
