@@ -33,7 +33,7 @@ namespace UnityInjector.Tests.Runtime {
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new UnityInjectorTestsEditor_GeneratedInstanceConstructor());
+            Container.SetInstanceConstructors(new UnityInjectorTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() => {
                     for (var i = 0; i < 10000; i++) {
                         container.Resolve<DependencyA>();
@@ -60,7 +60,7 @@ namespace UnityInjector.Tests.Runtime {
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new UnityInjectorTestsEditor_GeneratedInstanceConstructor());
+            Container.SetInstanceConstructors(new UnityInjectorTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() => {
                     for (var i = 0; i < 10000; i++) {
                         container.Resolve<DependencyB>();
