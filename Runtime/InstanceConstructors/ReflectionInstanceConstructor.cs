@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace UnityInjector.InstanceConstructors {
@@ -14,12 +13,10 @@ namespace UnityInjector.InstanceConstructors {
                     parameters = nextParameters;
             }
             if (parameters.Length > 0) {
-                var sharedPool = ArrayPool<object>.Shared;
-                var resolvedParameters = sharedPool.Rent(parameters.Length);
+                var resolvedParameters = new object[parameters.Length];
                 for (var index = 0; index < parameters.Length; index++)
                     resolvedParameters[index] = container.Resolve(parameters[index].ParameterType);
                 instance = Activator.CreateInstance(type, resolvedParameters);
-                sharedPool.Return(resolvedParameters);
             }
             else {
                 instance = Activator.CreateInstance(type);
