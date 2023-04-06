@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using UnityInjector.InstanceConstructors;
 
 namespace UnityInjector.Tests.Runtime {
     public class ContainerTests {
@@ -15,6 +16,12 @@ namespace UnityInjector.Tests.Runtime {
             public void Dispose() {
                 Disposed = true;
             }
+        }
+        
+        [SetUp]
+        public void SetUpTest()
+        {
+            Container.SetInstanceConstructors(new ReflectionInstanceConstructor());
         }
         
         [Test]
