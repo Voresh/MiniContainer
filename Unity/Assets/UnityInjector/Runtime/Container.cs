@@ -70,6 +70,8 @@ namespace UnityInjector {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (!interfaceType.IsAssignableFrom(type) && (!type.IsGenericTypeDefinition || !interfaceType.IsGenericTypeDefinition))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
+            if (type.IsAbstract || type.IsInterface)
+                throw new ArgumentException($"{type} is interface or abstract class");
 #endif
             var implementationRegistration = new Registration.Registration(type, cached);
             _Registrations.Add(interfaceType, implementationRegistration);
