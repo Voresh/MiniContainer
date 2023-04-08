@@ -21,6 +21,7 @@ namespace UnityInjector.Samples.Factory {
             container.Register<AnotherService>();
             container.RegisterInstance<Func<int, FactoryProduction>>(
                 _ => new FactoryProduction(container.Resolve<AnotherService>(), _));
+            container.RegisterInstance<Func<Type, object>>(container.CreateInstance); // abstract factory
             return container;
         }
         
