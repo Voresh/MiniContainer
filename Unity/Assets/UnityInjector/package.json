@@ -10,9 +10,24 @@
   },
   "samples": [
     {
-      "displayName": "CodeGeneration",
+      "displayName": "Code generation",
       "description": "Contains precompiled source generator dll",
       "path": "Samples~/CodeGen"
+    },
+    {
+      "displayName": "Basic",
+      "description": "Contains basic container setup and service resolution sample",
+      "path": "Samples~/Basic"
+    },
+    {
+      "displayName": "Factory",
+      "description": "Contains factory usage sample",
+      "path": "Samples~/Factory"
+    },
+    {
+      "displayName": "Open generic",
+      "description": "Contains open generic usage sample",
+      "path": "Samples~/OpenGeneric"
     }
   ]
 }
