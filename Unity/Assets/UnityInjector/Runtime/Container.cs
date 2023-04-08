@@ -23,6 +23,7 @@ namespace UnityInjector {
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetInstanceConstructors(params InstanceConstructor[] instanceConstructors) {
+            _InstanceConstructors.EnsureCapacity(instanceConstructors.Length);
             _InstanceConstructors.Clear();
             foreach (var instanceConstructor in instanceConstructors)
                 _InstanceConstructors.Add(instanceConstructor);
