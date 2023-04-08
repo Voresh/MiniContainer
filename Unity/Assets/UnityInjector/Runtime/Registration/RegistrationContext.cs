@@ -8,10 +8,9 @@ namespace UnityInjector.Registration {
         private readonly Registration _ImplementationRegistration;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext As<TInterface>() {
-            return As(typeof(TInterface));
-        }
-        
+        public RegistrationContext As<TInterface>()
+            => As(typeof(TInterface));
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext As(Type interfaceType) {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS

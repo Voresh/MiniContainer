@@ -29,14 +29,12 @@ namespace UnityInjector {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType>(TType instance) {
-            return RegisterInstance(instance, typeof(TType));
-        }
-        
+        public RegistrationContext RegisterInstance<TType>(TType instance) 
+            => RegisterInstance(instance, typeof(TType));
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface {
-            return RegisterInstance(instance, typeof(TInterface));
-        }
+        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface
+            => RegisterInstance(instance, typeof(TInterface));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext RegisterInstance(object instance, Type interfaceType) {
@@ -51,20 +49,17 @@ namespace UnityInjector {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface {
-            return Register(typeof(TType), typeof(TInterface), cached);
-        }
+        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface
+            => Register(typeof(TType), typeof(TInterface), cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType>(bool cached = true) {
-            return Register(typeof(TType), cached);
-        }
+        public RegistrationContext Register<TType>(bool cached = true) 
+            => Register(typeof(TType), cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register(Type type, bool cached = true) {
-            return Register(type, type, cached);
-        }
-        
+        public RegistrationContext Register(Type type, bool cached = true) 
+            => Register(type, type, cached);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext Register(Type type, Type interfaceType, bool cached = true) {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
@@ -92,9 +87,8 @@ namespace UnityInjector {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Resolve<T>() {
-            return (T) Resolve(typeof(T));
-        }
+        public T Resolve<T>() 
+            => (T) Resolve(typeof(T));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Type type) {
