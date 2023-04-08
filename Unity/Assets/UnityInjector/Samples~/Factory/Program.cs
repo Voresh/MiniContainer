@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityInjector.InstanceConstructors;
-using UnityInjector.Samples.Basic.Services;
+using UnityInjector.Samples.Factory.Production;
+using UnityInjector.Samples.Factory.Services;
 
-namespace UnityInjector.Samples.Basic {
+namespace UnityInjector.Samples.Factory {
     public class Program {
         [RuntimeInitializeOnLoadMethod]
         private static void Main() {
@@ -16,10 +18,12 @@ namespace UnityInjector.Samples.Basic {
                 new AssemblyCSharp_GeneratedInstanceConstructor(),
                 new ReflectionInstanceConstructor());
             container.Register<Service>();
-            container.Register<AnotherService, IAnotherService>();
+            container.Register<AnotherService>();
+            container.RegisterInstance<Func<int, FactoryProduction>>(
+                _ => new FactoryProduction(container.Resolve<AnotherService>(), _));
             return container;
         }
-
+        
         private static void Start(Container container) {
             container.Resolve<Service>();
         }

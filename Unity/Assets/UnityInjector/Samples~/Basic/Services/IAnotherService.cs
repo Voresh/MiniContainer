@@ -1,5 +1,3 @@
 ﻿namespace UnityInjector.Samples.Basic.Services {
-    public interface IAnotherService {
-        
-    }
+    public interface IAnotherService { }
 }
