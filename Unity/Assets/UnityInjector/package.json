@@ -28,6 +28,11 @@
       "displayName": "Open generic",
       "description": "Contains open generic usage sample",
       "path": "Samples~/OpenGeneric"
+    },
+    {
+      "displayName": "Scoping",
+      "description": "Contains container inheritance usage sample",
+      "path": "Samples~/Scoping"
     }
   ]
 }
