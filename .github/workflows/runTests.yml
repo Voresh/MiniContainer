@@ -1,0 +1,35 @@
+name: Run tests
+
+on: [push, pull_request]
+
+jobs:
+  run-unity-tests:
+    name: Build my project ✨
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: Unity/Library
+          key: Library-UnityInjector
+          restore-keys: |
+            Library-UnityInjector
+
+      # Test
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          projectPath: ./Unity
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Output
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Tests results
+          path: artifacts
