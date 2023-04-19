@@ -18,6 +18,7 @@ jobs:
           key: Library-UnityInjector
           restore-keys: |
             Library-UnityInjector
+            Library-
 
       # Test
       - name: Run tests
