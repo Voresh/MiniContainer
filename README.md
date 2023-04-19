@@ -1,5 +1,7 @@
 # Unity Injector
 
+[![Run tests](https://github.com/Voresh/UnityInjector/actions/workflows/runTests.yml/badge.svg?branch=main)](https://github.com/Voresh/UnityInjector/actions/workflows/runTests.yml)
+
 Unity Injector is fast and lightweight DI Container designed to simplify dependency injection in your codebase.
 With a small code base and easy-to-learn API, it's a great choice for developers who want a fast and reliable solution without the complexity of larger frameworks.
 
