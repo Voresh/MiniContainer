@@ -1,5 +1,7 @@
-﻿namespace MiniContainer.Exceptions {
-    public class InstanceConstructorNotFoundException : ContainerException {
+﻿namespace MiniContainer.Exceptions
+{
+    public class InstanceConstructorNotFoundException : ContainerException
+    {
         public InstanceConstructorNotFoundException(string message) : base(message) { }
     }
 }

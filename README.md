@@ -34,27 +34,33 @@ To begin using MiniContainer, you first need to build your container by register
 Once your container is built, you can run your entry point and use your registered dependencies.
 
 ```csharp
-public class Program {
+public class Program 
+{
     [RuntimeInitializeOnLoadMethod]
-    private static void Main() {
+    private static void Main() 
+    {
         var container = Build();
         Start(container);
     }
 
-    private static Container Build() {
+    private static Container Build() 
+    {
         var container = new Container();
         container.Register<Service>();
         container.Register<AnotherService, IAnotherService>();
         return container;
     }
 
-    private static void Start(Container container) {
+    private static void Start(Container container) 
+    {
         container.Resolve<Service>();
     }
 }
 
-public class Service {
-    public Service(IAnotherService anotherService) {
+public class Service 
+{
+    public Service(IAnotherService anotherService) 
+    {
         Debug.Log($"constructor call, got {anotherService}");
     }
 }    
@@ -69,9 +75,9 @@ MiniContainer supports registering dependencies in scoped containers, which can 
 Here's an example of registering and resolving a dependency in a scoped container:
 
 ```csharp
-using (var scopeContainer = new Container(container)) {
+using (var scopeContainer = new Container(container)) 
+{
     scopeContainer.Register<ScopedService>();
-    
     scopeContainer.Resolve<ScopedService>();
 }
 ```
@@ -88,9 +94,11 @@ Here's an example of registering a Func factory that can create a FactoryProduct
 
 ```csharp
 var container = new Container();
-container.RegisterInstance<Func<int, FactoryProduction>>(_ => new FactoryProduction(container.Resolve<AnotherService>(), _));
+container.RegisterInstance<Func<int, FactoryProduction>>(
+    _ => new FactoryProduction(container.Resolve<AnotherService>(), _));
 
-public Service(Func<int, FactoryProduction> productionFactory) {
+public Service(Func<int, FactoryProduction> productionFactory) 
+{
     var production = productionFactory(1);
 }
 ```
@@ -104,7 +112,8 @@ Here's an example of registering and resolving a generic type with a type parame
 ```csharp
 container.Register(typeof(Logger<>), typeof(ILogger<>));
 
-public Service(ILogger<Service> logger) {
+public Service(ILogger<Service> logger) 
+{
     logger.Log("constructor call");
 }
 ```

@@ -5,64 +5,65 @@ using MiniContainer.Exceptions;
 using MiniContainer.InstanceConstructors;
 using MiniContainer.Registration;
 
-namespace MiniContainer {
-    public class Container : IDisposable {
-        private readonly Container _Parent;
-        private readonly Dictionary<Type, Registration.Registration> _Registrations
+namespace MiniContainer
+{
+    public class Container : IDisposable
+    {
+        private readonly Container _parent;
+        private readonly Dictionary<Type, Registration.Registration> _registrations
             = new Dictionary<Type, Registration.Registration>();
-        private readonly Dictionary<Type, object> _Instances
+        private readonly Dictionary<Type, object> _instances
             = new Dictionary<Type, object>();
-        private readonly HashSet<IDisposable> _Disposables 
+        private readonly HashSet<IDisposable> _disposables
             = new HashSet<IDisposable>();
-        private static readonly HashSet<InstanceConstructor> _InstanceConstructors
+        private static readonly HashSet<InstanceConstructor> s_instanceConstructors
             = new HashSet<InstanceConstructor>(1) { new ReflectionInstanceConstructor() };
 
-        public Container(Container parent = null) {
-            _Parent = parent;
+        public Container(Container parent = null)
+        {
+            _parent = parent;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetInstanceConstructors(params InstanceConstructor[] instanceConstructors) {
-            _InstanceConstructors.EnsureCapacity(instanceConstructors.Length);
-            _InstanceConstructors.Clear();
+        public static void SetInstanceConstructors(params InstanceConstructor[] instanceConstructors)
+        {
+            s_instanceConstructors.EnsureCapacity(instanceConstructors.Length);
+            s_instanceConstructors.Clear();
             foreach (var instanceConstructor in instanceConstructors)
-                _InstanceConstructors.Add(instanceConstructor);
+                s_instanceConstructors.Add(instanceConstructor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType>(TType instance) 
-            => RegisterInstance(instance, typeof(TType));
+        public RegistrationContext RegisterInstance<TType>(TType instance) => RegisterInstance(instance, typeof(TType));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface
-            => RegisterInstance(instance, typeof(TInterface));
+        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface => RegisterInstance(instance, typeof(TInterface));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance(object instance, Type interfaceType) {
+        public RegistrationContext RegisterInstance(object instance, Type interfaceType)
+        {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (!interfaceType.IsInstanceOfType(instance))
                 throw new ArgumentException($"{interfaceType} not assignable from {instance.GetType()}");
 #endif
             var implementationRegistration = new Registration.Registration(instance.GetType(), true);
-            _Registrations.Add(interfaceType, implementationRegistration);
-            _Instances.Add(interfaceType, instance);
-            return new RegistrationContext(_Registrations, implementationRegistration);
+            _registrations.Add(interfaceType, implementationRegistration);
+            _instances.Add(interfaceType, instance);
+            return new RegistrationContext(_registrations, implementationRegistration);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface
-            => Register(typeof(TType), typeof(TInterface), cached);
+        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface => Register(typeof(TType), typeof(TInterface), cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType>(bool cached = true) 
-            => Register(typeof(TType), cached);
+        public RegistrationContext Register<TType>(bool cached = true) => Register(typeof(TType), cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register(Type type, bool cached = true) 
-            => Register(type, type, cached);
+        public RegistrationContext Register(Type type, bool cached = true) => Register(type, type, cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register(Type type, Type interfaceType, bool cached = true) {
+        public RegistrationContext Register(Type type, Type interfaceType, bool cached = true)
+        {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
             if (!interfaceType.IsAssignableFrom(type) && (!type.IsGenericTypeDefinition || !interfaceType.IsGenericTypeDefinition))
                 throw new ArgumentException($"{interfaceType} not assignable from {type}");
@@ -70,13 +71,14 @@ namespace MiniContainer {
                 throw new ArgumentException($"{type} is interface or abstract class");
 #endif
             var implementationRegistration = new Registration.Registration(type, cached);
-            _Registrations.Add(interfaceType, implementationRegistration);
-            return new RegistrationContext(_Registrations, implementationRegistration);
+            _registrations.Add(interfaceType, implementationRegistration);
+            return new RegistrationContext(_registrations, implementationRegistration);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object CreateInstance(Type type) {
-            foreach (var instanceConstructor in _InstanceConstructors)
+        public object CreateInstance(Type type)
+        {
+            foreach (var instanceConstructor in s_instanceConstructors)
                 if (instanceConstructor.TryGetInstance(type, this, out var instance))
                     return instance;
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
@@ -88,45 +90,50 @@ namespace MiniContainer {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Resolve<T>() 
-            => (T) Resolve(typeof(T));
+        public T Resolve<T>() => (T)Resolve(typeof(T));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type type) {
-            if (_Instances.TryGetValue(type, out var instance))
+        public object Resolve(Type type)
+        {
+            if (_instances.TryGetValue(type, out var instance))
                 return instance;
-            if (_Registrations.TryGetValue(type, out var registration)) {
+            if (_registrations.TryGetValue(type, out var registration))
+            {
                 instance = CreateInstance(registration.ImplementationType);
-                if (registration.Cached) {
-                    _Instances.Add(type, instance);
+                if (registration.Cached)
+                {
+                    _instances.Add(type, instance);
                     if (instance is IDisposable disposable)
-                        _Disposables.Add(disposable);
+                        _disposables.Add(disposable);
                 }
                 return instance;
             }
-            if (type.IsGenericType 
-                && _Registrations.TryGetValue(type.GetGenericTypeDefinition(), out registration)) {
+            if (type.IsGenericType
+                && _registrations.TryGetValue(type.GetGenericTypeDefinition(), out registration))
+            {
                 var genericArguments = type.GetGenericArguments();
                 var genericImplementationType = registration.ImplementationType.MakeGenericType(genericArguments);
                 instance = CreateInstance(genericImplementationType);
-                if (registration.Cached) {
-                    _Instances.Add(type, instance);
+                if (registration.Cached)
+                {
+                    _instances.Add(type, instance);
                     if (instance is IDisposable disposable)
-                        _Disposables.Add(disposable);
+                        _disposables.Add(disposable);
                 }
                 return instance;
             }
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
-            if (_Parent == null)
+            if (_parent == null)
                 throw new TypeNotRegisteredException($"{type} not registered in container");
 #endif
-            return _Parent.Resolve(type);
+            return _parent.Resolve(type);
         }
 
-        public void Dispose() {
-            foreach (var disposable in _Disposables)
+        public void Dispose()
+        {
+            foreach (var disposable in _disposables)
                 disposable.Dispose();
-            _Disposables.Clear();
+            _disposables.Clear();
         }
     }
 }

@@ -3,15 +3,19 @@ using MiniContainer.Samples.OpenGeneric.Logger;
 using MiniContainer.Samples.OpenGeneric.Services;
 using UnityEngine;
 
-namespace MiniContainer.Samples.OpenGeneric {
-    public class Program {
+namespace MiniContainer.Samples.OpenGeneric
+{
+    public class Program
+    {
         [RuntimeInitializeOnLoadMethod]
-        private static void Main() {
+        private static void Main()
+        {
             var container = Configure();
             Start(container);
         }
 
-        private static Container Configure() {
+        private static Container Configure()
+        {
             var container = new Container();
             Container.SetInstanceConstructors(
                 new AssemblyCSharp_GeneratedInstanceConstructor(),
@@ -23,7 +27,8 @@ namespace MiniContainer.Samples.OpenGeneric {
             return container;
         }
 
-        private static void Start(Container container) {
+        private static void Start(Container container)
+        {
             container.Resolve<Service>();
             container.Resolve<AnotherService>();
         }

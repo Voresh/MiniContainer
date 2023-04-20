@@ -1,3 +1,5 @@
-﻿namespace MiniContainer.Samples.Basic.Services {
-    public interface IAnotherService { }
+﻿namespace MiniContainer.Samples.Basic.Services
+{
+    public interface IAnotherService
+    { }
 }

@@ -2,30 +2,47 @@
 using MiniContainer.InstanceConstructors;
 using NUnit.Framework;
 
-namespace MiniContainer.Tests.Editor {
-    public class ContainerTests {
-        public class ClassA : IClassA { }
-        public class ClassB { }
-        public interface IClassA { }
-        public class GenericClassA<T> { }
-        public class GenericClassAChild : GenericClassA<ClassA> { }
-        public class TwoGenericClassA<T, T1> { }
-        public class DisposableClass : IDisposable {
+namespace MiniContainer.Tests.Editor
+{
+    public class ContainerTests
+    {
+        public class ClassA : IClassA
+        { }
+
+        public class ClassB
+        { }
+
+        public interface IClassA
+        { }
+
+        public class GenericClassA<T>
+        { }
+
+        public class GenericClassAChild : GenericClassA<ClassA>
+        { }
+
+        public class TwoGenericClassA<T, T1>
+        { }
+
+        public class DisposableClass : IDisposable
+        {
             public bool Disposed { get; private set; }
 
-            public void Dispose() {
+            public void Dispose()
+            {
                 Disposed = true;
             }
         }
-        
+
         [SetUp]
         public void SetUpTest()
         {
             Container.SetInstanceConstructors(new ReflectionInstanceConstructor());
         }
-        
+
         [Test]
-        public void RegisterInstanceTest() {
+        public void RegisterInstanceTest()
+        {
             var container = new Container();
             container.RegisterInstance(new ClassA());
             var dependencyA = container.Resolve<ClassA>();
@@ -33,23 +50,26 @@ namespace MiniContainer.Tests.Editor {
         }
 
         [Test]
-        public void RegisterTypeTest() {
+        public void RegisterTypeTest()
+        {
             var container = new Container();
             container.Register<ClassA>();
             var dependencyA = container.Resolve<ClassA>();
             Assert.IsNotNull(dependencyA);
         }
-        
+
         [Test]
-        public void RegisterTypeInterfaceTest() {
+        public void RegisterTypeInterfaceTest()
+        {
             var container = new Container();
             container.Register<ClassA, IClassA>();
             var dependencyInterfaceA = container.Resolve<IClassA>();
             Assert.IsNotNull(dependencyInterfaceA);
         }
-        
+
         [Test]
-        public void RegisterTypeSelfAndInterfaceTest() {
+        public void RegisterTypeSelfAndInterfaceTest()
+        {
             var container = new Container();
             container.Register<ClassA>()
                 .As<IClassA>();
@@ -58,26 +78,29 @@ namespace MiniContainer.Tests.Editor {
             var dependencyInterfaceA = container.Resolve<IClassA>();
             Assert.IsNotNull(dependencyInterfaceA);
         }
-        
+
         [Test]
-        public void RegisterInstanceInterfaceTest() {
+        public void RegisterInstanceInterfaceTest()
+        {
             var container = new Container();
             container.RegisterInstance(new ClassA())
                 .As<IClassA>();
             var dependencyA = container.Resolve<IClassA>();
             Assert.IsNotNull(dependencyA);
         }
-        
+
         [Test]
-        public void RegisterOpenGenericTest() {
+        public void RegisterOpenGenericTest()
+        {
             var container = new Container();
             container.Register(typeof(GenericClassA<>));
             var dependencyA = container.Resolve<GenericClassA<ClassA>>();
             Assert.IsNotNull(dependencyA);
         }
-        
+
         [Test]
-        public void RegisterOpenGenericsTest() {
+        public void RegisterOpenGenericsTest()
+        {
             var container = new Container();
             container.Register(typeof(GenericClassA<>));
             var dependencyA = container.Resolve<GenericClassA<ClassA>>();
@@ -85,9 +108,10 @@ namespace MiniContainer.Tests.Editor {
             Assert.IsNotNull(dependencyA);
             Assert.IsNotNull(dependencyB);
         }
-        
+
         [Test]
-        public void RegisterOpenGenericOverrideTest() {
+        public void RegisterOpenGenericOverrideTest()
+        {
             var container = new Container();
             container.Register(typeof(GenericClassA<>));
             container.Register(typeof(GenericClassAChild), typeof(GenericClassA<ClassA>));
@@ -95,9 +119,10 @@ namespace MiniContainer.Tests.Editor {
             Assert.IsNotNull(dependencyA);
             Assert.That(dependencyA is GenericClassAChild);
         }
-        
+
         [Test]
-        public void RegisterTwoOpenGenericsTest() {
+        public void RegisterTwoOpenGenericsTest()
+        {
             var container = new Container();
             container.Register(typeof(TwoGenericClassA<,>));
             var dependencyAB = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
@@ -109,9 +134,10 @@ namespace MiniContainer.Tests.Editor {
             var dependencyBA2 = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
             Assert.That(dependencyBA == dependencyBA2);
         }
-        
+
         [Test]
-        public void RegisterTwoOpenGenericsNonCachedTest() {
+        public void RegisterTwoOpenGenericsNonCachedTest()
+        {
             var container = new Container();
             container.Register(typeof(TwoGenericClassA<,>), false);
             var dependencyAB = container.Resolve<TwoGenericClassA<ClassA, ClassB>>();
@@ -123,27 +149,30 @@ namespace MiniContainer.Tests.Editor {
             var dependencyBA2 = container.Resolve<TwoGenericClassA<ClassB, ClassA>>();
             Assert.That(dependencyBA != dependencyBA2);
         }
-        
+
         [Test]
-        public void CachedDisposedTest() {
+        public void CachedDisposedTest()
+        {
             var container = new Container();
             container.Register<DisposableClass>(true);
             var disposable = container.Resolve<DisposableClass>();
             container.Dispose();
             Assert.IsTrue(disposable.Disposed);
         }
-        
+
         [Test]
-        public void NonCachedNotDisposedTest() {
+        public void NonCachedNotDisposedTest()
+        {
             var container = new Container();
             container.Register<DisposableClass>(false);
             var disposable = container.Resolve<DisposableClass>();
             container.Dispose();
             Assert.IsFalse(disposable.Disposed);
         }
-        
+
         [Test]
-        public void InstanceNotDisposedTest() {
+        public void InstanceNotDisposedTest()
+        {
             var container = new Container();
             container.RegisterInstance(new DisposableClass());
             var disposable = container.Resolve<DisposableClass>();

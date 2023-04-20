@@ -3,15 +3,19 @@ using MiniContainer.InstanceConstructors;
 using MiniContainer.Samples.Scoping.Services;
 using UnityEngine;
 
-namespace MiniContainer.Samples.Scoping {
-    public class Program {
+namespace MiniContainer.Samples.Scoping
+{
+    public class Program
+    {
         [RuntimeInitializeOnLoadMethod]
-        private static void Main() {
+        private static void Main()
+        {
             var container = Configure();
             Start(container);
         }
 
-        private static Container Configure() {
+        private static Container Configure()
+        {
             var container = new Container();
             Container.SetInstanceConstructors(
                 new AssemblyCSharp_GeneratedInstanceConstructor(),
@@ -21,10 +25,12 @@ namespace MiniContainer.Samples.Scoping {
             return container;
         }
 
-        private static void Start(Container container) {
-            using (var scopeContainer = new Container(container)) {
+        private static void Start(Container container)
+        {
+            using (var scopeContainer = new Container(container))
+            {
                 scopeContainer.Register<ScopedService>();
-                
+
                 scopeContainer.Resolve<ScopedService>();
             }
         }
