@@ -8,6 +8,8 @@
     "name": "Voresh",
     "email": "voresh95@gmail.com"
   },
+  "documentationUrl": "https://github.com/Voresh/MiniContainer/blob/main/README.md",
+  "licensesUrl": "https://github.com/Voresh/MiniContainer/blob/main/LICENSE",
   "samples": [
     {
       "displayName": "Code generation",
