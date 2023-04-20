@@ -7,7 +7,7 @@
     "com.unity.test-framework": "1.3.4",
     "com.unity.test-framework.performance": "3.0.0-pre.2",
     "com.unity.ugui": "1.0.0",
-    "com.voresh.unityinjector": "https://github.com/Voresh/UnityInjector.git?path=Unity/Assets/UnityInjector",
+    "com.voresh.minicontainer": "https://github.com/Voresh/MiniContainer.git?path=Unity/Assets/MiniContainer",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",

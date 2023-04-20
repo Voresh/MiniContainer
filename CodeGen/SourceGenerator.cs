@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace UnityInjectorCodeGen {
+namespace MiniContainer.CodeGen {
     [Generator]
     public class SourceGenerator : ISourceGenerator {
         private static readonly SymbolDisplayFormat _FullNameFormat = new SymbolDisplayFormat(
@@ -24,7 +24,7 @@ namespace UnityInjectorCodeGen {
                 || sourceModuleName.StartsWith("Unity."))
                 return;
             var instanceConstructorType 
-                = context.Compilation.GetTypeByMetadataName("UnityInjector.InstanceConstructors.InstanceConstructor");
+                = context.Compilation.GetTypeByMetadataName("MiniContainer.InstanceConstructors.InstanceConstructor");
             if (instanceConstructorType == null)
                 return; // di framework not referenced
             if (context.Compilation.AssemblyName == null)
@@ -38,10 +38,10 @@ namespace UnityInjectorCodeGen {
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace UnityInjector.InstanceConstructors {
+namespace MiniContainer.InstanceConstructors {
 ");
             sb.Append("    public class ", className, " : InstanceConstructor {\n");
-            sb.AppendLine(@"        public static Dictionary<Type, Func<UnityInjector.Container, object>> Constructors = new Dictionary<Type, Func<UnityInjector.Container, object>> {");
+            sb.AppendLine(@"        public static Dictionary<Type, Func<MiniContainer.Container, object>> Constructors = new Dictionary<Type, Func<MiniContainer.Container, object>> {");
             for (var i = 0; i < syntaxReceiver.Constructors.Count; i++) {
                 var constructorDeclarationSyntax = syntaxReceiver.Constructors[i];
                 var typeDeclarationSyntax = (TypeDeclarationSyntax)constructorDeclarationSyntax.Parent;

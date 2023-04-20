@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace UnityInjectorCodeGen {
+namespace MiniContainer.CodeGen {
     public static class StringBuilderExtensions {
         public static void Append(this StringBuilder stringBuilder, string str) {
             stringBuilder.Append(str);

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using Unity.PerformanceTesting;
-using UnityInjector.InstanceConstructors;
+using MiniContainer.InstanceConstructors;
 
-namespace UnityInjector.Tests.Runtime {
+namespace MiniContainer.Performance.Tests.Runtime {
     public class ClassA {
         public ClassA() { }
     }
@@ -33,7 +33,7 @@ namespace UnityInjector.Tests.Runtime {
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new UnityInjectorTestsPerformance_GeneratedInstanceConstructor());
+            Container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() => {
                     for (var i = 0; i < 10000; i++) {
                         container.Resolve<ClassA>();
@@ -60,7 +60,7 @@ namespace UnityInjector.Tests.Runtime {
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new UnityInjectorTestsPerformance_GeneratedInstanceConstructor());
+            Container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() => {
                     for (var i = 0; i < 10000; i++) {
                         container.Resolve<ClassB>();

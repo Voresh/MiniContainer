@@ -1,8 +1,8 @@
-# Unity Injector
+# MiniContainer
 
-[![Run tests](https://github.com/Voresh/UnityInjector/actions/workflows/runTests.yml/badge.svg?branch=main)](https://github.com/Voresh/UnityInjector/actions/workflows/runTests.yml)
+[![Run tests](https://github.com/Voresh/MiniContainer/actions/workflows/runTests.yml/badge.svg?branch=main)](https://github.com/Voresh/MiniContainer/actions/workflows/runTests.yml)
 
-Unity Injector is fast and lightweight DI Container designed to simplify dependency injection in your codebase.
+**MiniContainer** is fast and lightweight **DI Container** designed to simplify dependency injection in your codebase.
 With a small code base and easy-to-learn API, it's a great choice for developers who want a fast and reliable solution without the complexity of larger frameworks.
 
 ### Key Features
@@ -130,9 +130,9 @@ Requires `Unity 2021.3+`
 
 ### Install via git URL
 
-You can select "Add package from git URL" in Package Manager and paste `https://github.com/Voresh/UnityInjector.git?path=Unity/Assets/UnityInjector` there.
+You can select "Add package from git URL" in Package Manager and paste `https://github.com/Voresh/MiniContainer.git?path=Unity/Assets/MiniContainer` there.
 
-Or you can add `"com.voresh.unityinjector": "https://github.com/Voresh/UnityInjector.git?path=Unity/Assets/UnityInjector",` to `Packages/manifest.json`
+Or you can add `"com.voresh.minicontainer": "https://github.com/Voresh/MiniContainer.git?path=Unity/Assets/MiniContainer",` to `Packages/manifest.json`
 
 ## License
 

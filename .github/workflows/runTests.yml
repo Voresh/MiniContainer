@@ -15,9 +15,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Unity/Library
-          key: Library-UnityInjector
+          key: Library-MiniContainer
           restore-keys: |
-            Library-UnityInjector
+            Library-MiniContainer
             Library-
 
       # Test
