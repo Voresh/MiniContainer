@@ -1,4 +1,4 @@
-# MiniContainer
+# MiniContainer (Unity, .NET, .NET Core)
 
 [![Run tests](https://github.com/Voresh/MiniContainer/actions/workflows/runTests.yml/badge.svg?branch=main)](https://github.com/Voresh/MiniContainer/actions/workflows/runTests.yml)
 
@@ -29,7 +29,7 @@ With a small code base and easy-to-learn API, it's a great choice for developers
 
 ## Getting Started
 
-To begin using Unity Injector, you first need to build your container by registering all the dependencies you will need.
+To begin using MiniContainer, you first need to build your container by registering all the dependencies you will need.
 
 Once your container is built, you can run your entry point and use your registered dependencies.
 
@@ -64,7 +64,7 @@ In the following example, Service is registered as self and AnotherService is re
 
 ## Scoping
 
-Unity Injector supports registering dependencies in scoped containers, which can be useful for organizing dependencies in different scopes, such as game or menu scopes.
+MiniContainer supports registering dependencies in scoped containers, which can be useful for organizing dependencies in different scopes, such as game or menu scopes.
 
 Here's an example of registering and resolving a dependency in a scoped container:
 
@@ -78,11 +78,11 @@ using (var scopeContainer = new Container(container)) {
 
 Scoped containers can also have a parent container, which allows them to access dependencies registered in the parent container.
 
-When a scoped container is disposed, Unity Injector will automatically dispose all registered `IDisposable` dependencies within that scope.
+When a scoped container is disposed, MiniContainer will automatically dispose all registered `IDisposable` dependencies within that scope.
 
 ## Factories
 
-Unity Injector allows you to use Func as a factory to create dependencies. You can register the factory as an instance and use it as a dependency.
+MiniContainer allows you to use Func as a factory to create dependencies. You can register the factory as an instance and use it as a dependency.
 
 Here's an example of registering a Func factory that can create a FactoryProduction instance:
 
@@ -97,7 +97,7 @@ public Service(Func<int, FactoryProduction> productionFactory) {
 
 ## Open Generics
 
-Unity Injector allows registration of open generic types, which can be useful for situations where you want to define a dependency based on a generic type, but without specifying the type argument.
+MiniContainer allows registration of open generic types, which can be useful for situations where you want to define a dependency based on a generic type, but without specifying the type argument.
 
 Here's an example of registering and resolving a generic type with a type parameter that's not specified:
 
@@ -113,8 +113,9 @@ public Service(ILogger<Service> logger) {
 
 ### Code generation
 
-Unity Injector leverages Source Generators to eliminate reflection and create dependencies directly using constructor, with a fallback to reflection when necessary.
-To use source-generated code, you'll need to register your instance constructors, these constructors are named as `"AssemblyName"_GeneratedInstanceConstructor`.
+MiniContainer leverages Source Generators to eliminate reflection and create dependencies directly using constructor, with a fallback to reflection when necessary.
+To use source-generated code you need to import "Code generation" sample in Package Manager.
+Then you'll need to register your instance constructors, these constructors are named as `"AssemblyName"_GeneratedInstanceConstructor`.
 
 Here's an example of setting the instance constructors:
 
