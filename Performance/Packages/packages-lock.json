@@ -107,6 +107,13 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.voresh.minicontainer": {
+      "version": "https://github.com/Voresh/MiniContainer.git?path=Unity/Assets/MiniContainer",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "860feda8c6f2e878d96c1eb9c0cc142f131b7962"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
