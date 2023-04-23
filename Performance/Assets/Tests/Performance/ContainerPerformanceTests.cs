@@ -31,7 +31,7 @@ namespace MiniContainer.Performance.Tests.Runtime
         {
             var container = new Container();
             container.Register<ClassA>(false);
-            Container.SetInstanceConstructors(new ReflectionInstanceConstructor());
+            container.SetInstanceConstructors(new ReflectionInstanceConstructor());
             Measure.Method(() =>
                 {
                     for (var i = 0; i < 10000; i++)
@@ -42,7 +42,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
+            container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() =>
                 {
                     for (var i = 0; i < 10000; i++)
@@ -63,7 +63,7 @@ namespace MiniContainer.Performance.Tests.Runtime
             container.Register<ClassB>(false);
             container.Register<ClassC>(false);
             container.Register<ClassD>(false);
-            Container.SetInstanceConstructors(new ReflectionInstanceConstructor());
+            container.SetInstanceConstructors(new ReflectionInstanceConstructor());
             Measure.Method(() =>
                 {
                     for (var i = 0; i < 10000; i++)
@@ -74,7 +74,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                 .SampleGroup("Reflection")
                 .GC()
                 .Run();
-            Container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
+            container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() =>
                 {
                     for (var i = 0; i < 10000; i++)

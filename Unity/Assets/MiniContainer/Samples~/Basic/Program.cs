@@ -16,7 +16,7 @@ namespace MiniContainer.Samples.Basic
         private static Container Build()
         {
             var container = new Container();
-            Container.SetInstanceConstructors(
+            container.SetInstanceConstructors(
                 new AssemblyCSharp_GeneratedInstanceConstructor(),
                 new ReflectionInstanceConstructor());
             container.Register<Service>();

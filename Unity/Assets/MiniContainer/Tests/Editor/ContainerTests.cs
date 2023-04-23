@@ -34,12 +34,6 @@ namespace MiniContainer.Tests.Editor
             }
         }
 
-        [SetUp]
-        public void SetUpTest()
-        {
-            Container.SetInstanceConstructors(new ReflectionInstanceConstructor());
-        }
-
         [Test]
         public void RegisterInstanceTest()
         {

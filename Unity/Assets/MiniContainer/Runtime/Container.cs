@@ -16,7 +16,7 @@ namespace MiniContainer
             = new Dictionary<Type, object>();
         private readonly HashSet<IDisposable> _disposables
             = new HashSet<IDisposable>();
-        private static readonly HashSet<InstanceConstructor> s_instanceConstructors
+        private readonly HashSet<InstanceConstructor> _instanceConstructors
             = new HashSet<InstanceConstructor>(1) { new ReflectionInstanceConstructor() };
 
         public Container(Container parent = null)
@@ -25,12 +25,12 @@ namespace MiniContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetInstanceConstructors(params InstanceConstructor[] instanceConstructors)
+        public void SetInstanceConstructors(params InstanceConstructor[] instanceConstructors)
         {
-            s_instanceConstructors.EnsureCapacity(instanceConstructors.Length);
-            s_instanceConstructors.Clear();
+            _instanceConstructors.EnsureCapacity(instanceConstructors.Length);
+            _instanceConstructors.Clear();
             foreach (var instanceConstructor in instanceConstructors)
-                s_instanceConstructors.Add(instanceConstructor);
+                _instanceConstructors.Add(instanceConstructor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -78,7 +78,7 @@ namespace MiniContainer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object CreateInstance(Type type)
         {
-            foreach (var instanceConstructor in s_instanceConstructors)
+            foreach (var instanceConstructor in _instanceConstructors)
                 if (instanceConstructor.TryGetInstance(type, this, out var instance))
                     return instance;
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
