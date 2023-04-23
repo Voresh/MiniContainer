@@ -120,6 +120,11 @@ public Service(ILogger<Service> logger)
 
 ## Performance
 
+<img src="Documentation/RegisterComplexGC.png" width="49.5%" height="49.5%">
+<img src="Documentation/RegisterComplexMs.png" width="49.5%" height="49.5%">
+<img src="Documentation/ResolveComplexGC.png" width="49.5%" height="49.5%">
+<img src="Documentation/ResolveComplexMs.png" width="49.5%" height="49.5%">
+
 ### Code generation
 
 MiniContainer leverages Source Generators to eliminate reflection and create dependencies directly using constructor, with a fallback to reflection when necessary.
