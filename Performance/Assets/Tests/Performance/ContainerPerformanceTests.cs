@@ -95,6 +95,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                     }
                 })
                 .SampleGroup("Reflection")
+                .GC()
                 .Run();
             container.SetInstanceConstructors(new MiniContainerTestsPerformance_GeneratedInstanceConstructor());
             Measure.Method(() =>
@@ -105,6 +106,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                     }
                 })
                 .SampleGroup("MiniContainer")
+                .GC()
                 .Run();
             var zenjectContainer = new DiContainer();
             zenjectContainer.Bind<ClassA>().AsTransient().Lazy();
@@ -119,6 +121,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                     }
                 })
                 .SampleGroup("Zenject")
+                .GC()
                 .Run();
             var builder = new ContainerBuilder();
             builder.Register<ClassA>(Lifetime.Transient);
@@ -134,6 +137,7 @@ namespace MiniContainer.Performance.Tests.Runtime
                     }
                 })
                 .SampleGroup("VContainer")
+                .GC()
                 .Run();
         }
 
