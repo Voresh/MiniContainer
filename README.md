@@ -120,10 +120,10 @@ public Service(ILogger<Service> logger)
 
 ## Performance
 
-<img src="Documentation/RegisterComplexGC.png" width="49.5%" height="49.5%">
-<img src="Documentation/RegisterComplexMs.png" width="49.5%" height="49.5%">
-<img src="Documentation/ResolveComplexGC.png" width="49.5%" height="49.5%">
-<img src="Documentation/ResolveComplexMs.png" width="49.5%" height="49.5%">
+![](Documentation/RegisterComplexGC.png)
+![](Documentation/RegisterComplexMs.png)
+![](Documentation/ResolveComplexGC.png)
+![](Documentation/ResolveComplexMs.png)
 
 ### Code generation
 
