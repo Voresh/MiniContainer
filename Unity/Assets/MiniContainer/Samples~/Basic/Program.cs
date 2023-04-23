@@ -9,11 +9,11 @@ namespace MiniContainer.Samples.Basic
         [RuntimeInitializeOnLoadMethod]
         private static void Main()
         {
-            var container = Configure();
+            var container = Build();
             Start(container);
         }
 
-        private static Container Configure()
+        private static Container Build()
         {
             var container = new Container();
             Container.SetInstanceConstructors(
