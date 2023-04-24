@@ -34,12 +34,6 @@ namespace MiniContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType>(TType instance) => RegisterInstance(instance, typeof(TType));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext RegisterInstance<TType, TInterface>(TType instance) where TType : TInterface => RegisterInstance(instance, typeof(TInterface));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext RegisterInstance(object instance, Type interfaceType)
         {
 #if !DISABLE_UNITY_INJECTOR_CONTAINER_EXCEPTIONS
@@ -51,15 +45,6 @@ namespace MiniContainer
             _instances.Add(interfaceType, instance);
             return new RegistrationContext(_registrations, implementationRegistration);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType, TInterface>(bool cached = true) where TType : TInterface => Register(typeof(TType), typeof(TInterface), cached);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register<TType>(bool cached = true) => Register(typeof(TType), cached);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegistrationContext Register(Type type, bool cached = true) => Register(type, type, cached);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RegistrationContext Register(Type type, Type interfaceType, bool cached = true)
