@@ -1,5 +1,4 @@
 ﻿using System;
-using MiniContainer.InstanceConstructors;
 using NUnit.Framework;
 
 namespace MiniContainer.Tests.Editor
@@ -11,6 +10,16 @@ namespace MiniContainer.Tests.Editor
 
         public class ClassB
         { }
+
+        public class ClassC
+        {
+            public int Number { get; }
+
+            public ClassC(int number)
+            {
+                Number = number;
+            }
+        }
 
         public interface IClassA
         { }
@@ -38,7 +47,7 @@ namespace MiniContainer.Tests.Editor
         public void RegisterInstanceTest()
         {
             var container = new Container();
-            container.RegisterInstance(new ClassA());
+            container.RegisterInstance(new ClassA(), typeof(ClassA));
             var dependencyA = container.Resolve<ClassA>();
             Assert.IsNotNull(dependencyA);
         }
@@ -47,7 +56,7 @@ namespace MiniContainer.Tests.Editor
         public void RegisterTypeTest()
         {
             var container = new Container();
-            container.Register<ClassA>();
+            container.Register(typeof(ClassA), typeof(ClassA));
             var dependencyA = container.Resolve<ClassA>();
             Assert.IsNotNull(dependencyA);
         }
@@ -56,7 +65,7 @@ namespace MiniContainer.Tests.Editor
         public void RegisterTypeInterfaceTest()
         {
             var container = new Container();
-            container.Register<ClassA, IClassA>();
+            container.Register(typeof(ClassA), typeof(IClassA));
             var dependencyInterfaceA = container.Resolve<IClassA>();
             Assert.IsNotNull(dependencyInterfaceA);
         }
@@ -65,7 +74,7 @@ namespace MiniContainer.Tests.Editor
         public void RegisterTypeSelfAndInterfaceTest()
         {
             var container = new Container();
-            container.Register<ClassA>()
+            container.Register(typeof(ClassA), typeof(ClassA))
                 .As<IClassA>();
             var dependencyA = container.Resolve<ClassA>();
             Assert.IsNotNull(dependencyA);
@@ -77,10 +86,21 @@ namespace MiniContainer.Tests.Editor
         public void RegisterInstanceInterfaceTest()
         {
             var container = new Container();
-            container.RegisterInstance(new ClassA())
-                .As<IClassA>();
+            container.RegisterInstance(new ClassA(), typeof(IClassA));
             var dependencyA = container.Resolve<IClassA>();
             Assert.IsNotNull(dependencyA);
+        }
+        
+        [Test]
+        public void RegisterInstanceSelfAndInterfaceTest()
+        {
+            var container = new Container();
+            container.RegisterInstance(new ClassA(), typeof(ClassA))
+                .As<IClassA>();
+            var dependencyA = container.Resolve<ClassA>();
+            Assert.IsNotNull(dependencyA);
+            var dependencyInterfaceA = container.Resolve<IClassA>();
+            Assert.IsNotNull(dependencyInterfaceA);
         }
 
         [Test]
@@ -172,6 +192,52 @@ namespace MiniContainer.Tests.Editor
             var disposable = container.Resolve<DisposableClass>();
             container.Dispose();
             Assert.IsFalse(disposable.Disposed);
+        }
+
+        [Test]
+        public void FuncFactoryTest()
+        {
+            var container = new Container();
+            container.RegisterInstance<Func<int, ClassC>>(number => new ClassC(number));
+            var classC = container.Resolve<Func<int, ClassC>>().Invoke(1);
+            Assert.IsNotNull(classC);
+            Assert.AreEqual(1, classC.Number);
+        }
+        
+        [Test]
+        public void FuncInterfaceFactoryTest()
+        {
+            var container = new Container();
+            container.RegisterInstance<Func<IClassA>>(() => new ClassA());
+            var classA = container.Resolve<Func<IClassA>>().Invoke();
+            Assert.IsNotNull(classA);
+        }
+
+        [Test]
+        public void ScopeTest()
+        {
+            var container = new Container();
+            container.Register<ClassA>();
+            using (var scopedContainer = new Container(container))
+            {
+                var classA = scopedContainer.Resolve<ClassA>();
+                Assert.IsNotNull(classA);
+                
+                scopedContainer.Register<ClassB>();
+                var classB = scopedContainer.Resolve<ClassB>();
+                Assert.IsNotNull(classB);
+                
+                classB = null;
+                try
+                {
+                    classB = container.Resolve<ClassB>();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                Assert.IsNull(classB);
+            }
         }
     }
 }
