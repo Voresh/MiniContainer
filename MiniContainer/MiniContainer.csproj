@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Container.cs">
+        <Link>Runtime\Container.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\ContainerExtensions.cs">
+        <Link>Runtime\ContainerExtensions.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Exceptions\ContainerException.cs">
+        <Link>Runtime\Exceptions\ContainerException.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Exceptions\InstanceConstructorNotFoundException.cs">
+        <Link>Runtime\Exceptions\InstanceConstructorNotFoundException.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Exceptions\TypeNotRegisteredException.cs">
+        <Link>Runtime\Exceptions\TypeNotRegisteredException.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\InstanceConstructors\DictionaryInstanceConstructor.cs">
+        <Link>Runtime\InstanceConstructors\DictionaryInstanceConstructor.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\InstanceConstructors\InstanceConstructor.cs">
+        <Link>Runtime\InstanceConstructors\InstanceConstructor.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\InstanceConstructors\ReflectionInstanceConstructor.cs">
+        <Link>Runtime\InstanceConstructors\ReflectionInstanceConstructor.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Registration\Registration.cs">
+        <Link>Runtime\Registration\Registration.cs</Link>
+      </Compile>
+      <Compile Include="..\Unity\Assets\MiniContainer\Runtime\Registration\RegistrationContext.cs">
+        <Link>Runtime\Registration\RegistrationContext.cs</Link>
+      </Compile>
+    </ItemGroup>
+  
+</Project>
