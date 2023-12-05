@@ -35,7 +35,8 @@ namespace MiniContainer.CodeGen
                 return;
             var assemblyName = context.Compilation.AssemblyName
                 .Replace("-", string.Empty)
-                .Replace(".", string.Empty);
+                .Replace(".", string.Empty)
+                .Replace(" ", string.Empty);
             var className = $"{assemblyName}_GeneratedInstanceConstructor";
             var sb = new StringBuilder(
                 @"using System;
